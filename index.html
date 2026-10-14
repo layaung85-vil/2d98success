@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D 98% SUCCESS - QUANTUM TERMINAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Pyidaungsu:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #010409;
+            --terminal-bg: rgba(13, 27, 42, 0.7);
+            --primary-color: #00ff88;
+            --accent-color: #00e5ff;
+            --danger-color: #ff3366;
+            --warning-color: #ffcc00;
+            --text-color: #c9d1d9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pyidaungsu', 'Orbitron', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Sci-Fi Scanline overlay */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 999;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        .terminal-wrapper {
+            width: 92%;
+            max-width: 650px;
+            background: var(--terminal-bg);
+            border: 1px solid var(--primary-color);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.15), inset 0 0 20px rgba(0, 255, 136, 0.05);
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background: rgba(0, 255, 136, 0.1);
+            padding: 10px 20px;
+            border-bottom: 1px solid var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .terminal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            box-shadow: 0 0 5px var(--primary-color);
+        }
+        .dot.red { background: var(--danger-color); box-shadow: 0 0 5px var(--danger-color); }
+        .dot.yellow { background: var(--warning-color); box-shadow: 0 0 5px var(--warning-color); }
+
+        .terminal-body {
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: #fff;
+            text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color);
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .desc-box {
+            background: rgba(0, 229, 255, 0.05);
+            border-left: 3px solid var(--accent-color);
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: #e6f1ff;
+            text-align: justify;
+            margin-bottom: 25px;
+        }
+
+        /* Guarantee Box Style */
+        .guarantee-box {
+            background: rgba(255, 204, 0, 0.05);
+            border: 1px dashed var(--warning-color);
+            border-radius: 4px;
+            padding: 12px;
+            margin: 15px 0 20px 0;
+            color: var(--warning-color);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            text-align: center;
+            box-shadow: inset 0 0 10px rgba(255, 204, 0, 0.05);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: glitchFade 0.4s ease-in-out;
+        }
+
+        @keyframes glitchFade {
+            0% { opacity: 0; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .input-box-container {
+            margin: 15px 0;
+        }
+
+        .input-label {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            display: block;
+            letter-spacing: 1.5px;
+        }
+
+        .cyber-input {
+            width: 70%;
+            padding: 14px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            font-size: 1.4rem;
+            text-align: center;
+            border-radius: 4px;
+            outline: none;
+            letter-spacing: 8px;
+            box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .cyber-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5), inset 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .cyber-btn {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            padding: 12px 35px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+        }
+
+        .cyber-btn:hover {
+            background: var(--primary-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 20px var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .error-msg {
+            color: var(--danger-color);
+            font-size: 0.85rem;
+            margin-top: 10px;
+            text-shadow: 0 0 5px var(--danger-color);
+        }
+
+        .action-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px dashed var(--accent-color);
+            padding: 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .action-card:hover {
+            border-color: var(--primary-color);
+            background: rgba(0, 255, 136, 0.05);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+        }
+
+        .action-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .status-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .results-grid {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .quantum-node {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #002b20, #00111a);
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+            animation: nodePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes nodePop {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .system-footer {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 15px;
+        }
+
+        .sub-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-color);
+            padding: 6px 15px;
+            font-size: 0.8rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            transition: 0.2s;
+        }
+
+        .sub-btn:hover {
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        .system-status-indicator {
+            font-size: 0.75rem;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="terminal-wrapper">
+        <div class="terminal-header">
+            <div class="terminal-title">SYS_ID: 2D-QUANTUM-CORE v2.4</div>
+            <div class="terminal-dots">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+
+        <div class="terminal-body">
+            <h1>2D 98% SUCCESS</h1>
+            <div class="desc-box">
+                (၉၈% အထိ မှန်သော နေ့စဥ် နေ့လည့် ၅ကွက် /ညနေ ၅ကွက် ) ပုံမှန် ပြသထားလျှက်ရှိပြီး မနက်ပိုင်းဆို 11:00 AM နင့် ညနေအတွက်ဆ်ုရင် 3:30 PM အချိန်ရောက်မှသာ Page ထဲမှ 2D ဂဏန်းရယူရန် ဆိူသည့် နေရာအား Click လုပ်၍ ရယူနိုင်ပါသည်...Login Code ရယူရန် Telegram -- t.me/technogod2d သို့ဆက်သွယ်ပြီး အပတ်စဥ်​ကြေး ၂၀,၀၀၀ကျပ်ပေးသွင်းပြီး ရယူနိင်ပါသည်...
+            </div>
+
+            <!-- SECTION 1: LOGIN ACCESS CODE -->
+            <div id="loginSection" class="section active">
+                <div class="input-box-container">
+                    <label class="input-label" for="accessCode">[ ENTER ACCESS CODE ]</label>
+                    <input type="password" id="accessCode" class="cyber-input" placeholder="••••" maxlength="4">
+                    
+                    <!-- အာမခံချက် စာသားထည့်သွင်းထားသော နေရာ -->
+                    <div class="guarantee-box">
+                        ⚡ အာမခံချက်-- 2D သည် ၁ပတ်လျှင် မနက်/ည ၁၀ကြိမ်ရှိရာ၌ အနည်းဆုံး (၆ကြိမ်) ထိရမည်ဟု အာမခံပါသည်...အကယ်၍ မထိမညှိက ၂၀,၀၀၀ ကျပ်ပြန်လည်ပေးအပ်ပါမည်..
+                    </div>
+
+                    <div id="errorText" class="error-msg"></div>
+                </div>
+                <button class="cyber-btn" onclick="verifyCode()">INITIALIZE LOGIN</button>
+            </div>
+
+            <!-- SECTION 2: 2D DASHBOARD -->
+            <div id="dashboardSection" class="section">
+                <div class="action-card" id="actionBox" onclick="fetch2DNumbers()">
+                    <h3>[ 2D ဂဏန်းရယူရန် ]</h3>
+                    <div id="statusArea" class="status-text">စနစ်ချိတ်ဆက်နေသည်...</div>
+                </div>
+
+                <div id="outputArea" class="results-grid" style="display: none;"></div>
+
+                <div class="system-footer">
+                    <span class="system-status-indicator">STATUS: SECURE ENCRYPTED</span>
+                    <button class="sub-btn" onclick="logout()">DISCONNECT</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CORRECT_CODE = "0000";
+
+        function verifyCode() {
+            const inputVal = document.getElementById('accessCode').value;
+            const errorText = document.getElementById('errorText');
+
+            if (inputVal === CORRECT_CODE) {
+                document.getElementById('loginSection').classList.remove('active');
+                document.getElementById('dashboardSection').classList.add('active');
+                errorText.innerText = "";
+                document.getElementById('accessCode').value = "";
+                initSystemTimer();
+            } else {
+                errorText.innerText = "ACCESS DENIED: မှားယွင်းသော Code ဖြစ်ပါသည်။ (Default: 0000)";
+            }
+        }
+
+        function logout() {
+            document.getElementById('dashboardSection').classList.remove('active');
+            document.getElementById('loginSection').classList.add('active');
+            document.getElementById('outputArea').style.display = 'none';
+            document.getElementById('outputArea').innerHTML = '';
+        }
+
+        let isTimeValid = false;
+        let timerInterval;
+
+        function initSystemTimer() {
+            const statusArea = document.getElementById('statusArea');
+            clearInterval(timerInterval);
+
+            timerInterval = setInterval(() => {
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                const seconds = now.getSeconds();
+
+                let currentTotalMins = hours * 60 + minutes;
+                let morningTarget = 11 * 60;       // 11:00 AM
+                let eveningTarget = 15 * 60 + 30;   // 3:30 PM (15:30)
+
+                let isMorningSession = (currentTotalMins >= morningTarget && currentTotalMins <= morningTarget + 60);
+                let isEveningSession = (currentTotalMins >= eveningTarget && currentTotalMins <= eveningTarget + 60);
+
+                if (isMorningSession || isEveningSession) {
+                    isTimeValid = true;
+                    statusArea.innerHTML = "SYSTEM READY: ကလစ်နှိပ်၍ ဂဏန်းထုတ်ပါ";
+                    statusArea.style.color = "#00ff88";
+                } else {
+                    isTimeValid = false;
+                    let targetMins = currentTotalMins < morningTarget ? morningTarget : (currentTotalMins < eveningTarget ? eveningTarget : morningTarget + 1440);
+                    let diffMins = targetMins - currentTotalMins;
+                    if (diffMins < 0) diffMins += 1440;
+
+                    let h = Math.floor(diffMins / 60);
+                    let m = diffMins % 60;
+                    let s = 59 - seconds;
+
+                    statusArea.innerHTML = `COUNT TIME: ${h}နာရီ ${m}မိနစ် ${s}စက္ကန့် စောင့်ပါ။`;
+                    statusArea.style.color = "#ff3366";
+                }
+            }, 1000);
+        }
+
+        function fetch2DNumbers() {
+            const outputArea = document.getElementById('outputArea');
+
+            if (!isTimeValid) {
+                alert("သတ်မှတ်ထားသော အချိန် (မနက် 11:00 AM သို့မဟုတ် ညနေ 3:30 PM) မရောက်သေးပါ သို့မဟုတ် အချိန် ကျော်လွန်သွားပါပြီ။ Count Time အတိုင်း ဆက်လက်စောင့်ဆိုင်းပါ။");
+                return;
+            }
+
+            let numbers = [];
+            while (numbers.length < 5) {
+                let randomNum = Math.floor(Math.random() * 100);
+                let formattedNum = randomNum < 10 ? "0" + randomNum : "" + randomNum;
+                if (!numbers.includes(formattedNum)) {
+                    numbers.push(formattedNum);
+                }
+            }
+
+            outputArea.style.display = 'flex';
+            outputArea.innerHTML = '';
+
+            numbers.forEach(num => {
+                let node = document.createElement('div');
+                node.className = 'quantum-node';
+                node.innerText = num;
+                outputArea.appendChild(node);
+            });
+        }
+    </script>
+</body>
+</html>
